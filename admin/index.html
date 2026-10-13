@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Okayline admin</title>
+<meta name="robots" content="noindex">
+<style>body{font:15px/1.5 system-ui,sans-serif;max-width:720px;margin:30px auto;padding:0 16px;color:#0f172a}label{display:block;margin:10px 0 2px;font-weight:600}
+input,select,textarea{width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;font:inherit}textarea{min-height:90px}button{margin-top:14px;padding:10px 16px;border:0;border-radius:6px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer}
+pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:6px;white-space:pre-wrap}.note{color:#64748b;font-size:13px}fieldset{border:1px solid #e2e8f0;border-radius:8px;margin:16px 0}</style></head>
+<body><h1>Okayline admin</h1>
+<p class="note">This page never stores passwords or tokens. It writes the incident file for you, then opens GitHub's own editor in your repo, where you sign in as usual and click <b>Commit</b>. The page rebuilds within about a minute.</p>
+<label>Your repo (owner/name)</label><input id="repo" placeholder="acme/status"><label>Branch</label><input id="branch" value="main">
+<fieldset><legend>New incident or maintenance</legend>
+<label>Type</label><select id="type"><option value="incident">Incident</option><option value="maintenance">Scheduled maintenance</option></select>
+<label>Title</label><input id="title" placeholder="Elevated API errors">
+<label>Impact</label><select id="impact"><option>minor</option><option>major</option><option>maintenance</option></select>
+<label>Affected components (comma-separated ids)</label><input id="components" placeholder="api, website">
+<div id="mwin" hidden><label>Maintenance start (your local time)</label><input id="ms" type="datetime-local"><label>Maintenance end</label><input id="me" type="datetime-local"></div>
+<label>Status</label><select id="status"><option>investigating</option><option>identified</option><option>monitoring</option><option>resolved</option><option>scheduled</option></select>
+<label>Message</label><textarea id="msg" placeholder="We're looking into it."></textarea>
+<button id="go">Preview and open in GitHub</button></fieldset>
+<pre id="out" hidden></pre>
+<script>
+const $ = (id) => document.getElementById(id);
+$('repo').value = localStorage.okRepo || ''; $('type').onchange = () => { $('mwin').hidden = $('type').value !== 'maintenance'; };
+const iso = (d) => new Date(d).toISOString().replace(/\.\d+Z$/, 'Z');
+function compose() {
+  const now = iso(Date.now()), t = $('type').value, title = $('title').value.trim();
+  if (!title) throw new Error('Title is required');
+  const slug = now.slice(0, 10) + '-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+  const fm = ['---', 'title: ' + title.replace(/\n/g, ' '), 'type: ' + t, 'impact: ' + (t === 'maintenance' ? 'maintenance' : $('impact').value), 'components: ' + $('components').value];
+  if (t === 'maintenance') { if (!$('ms').value || !$('me').value) throw new Error('Set the maintenance window'); fm.push('scheduled_start: ' + iso($('ms').value), 'scheduled_end: ' + iso($('me').value)); }
+  else { fm.push('started: ' + now); if ($('status').value === 'resolved') fm.push('resolved: ' + now); }
+  fm.push('---', '## ' + now + ' ' + $('status').value, $('msg').value.trim(), '');
+  return { name: 'incidents/' + slug + '.md', text: fm.join('\n') };
+}
+$('go').onclick = () => {
+  try { const f = compose(); localStorage.okRepo = $('repo').value.trim(); $('out').hidden = false; $('out').textContent = f.name + '\n\n' + f.text;
+    if (!/^[\w.-]+\/[\w.-]+$/.test($('repo').value.trim())) return alert('Enter your repo as owner/name to open GitHub.');
+    window.open(`https://github.com/${$('repo').value.trim()}/new/${encodeURIComponent($('branch').value)}?filename=${encodeURIComponent(f.name)}&value=${encodeURIComponent(f.text)}`, '_blank', 'noopener');
+  } catch (e) { alert(e.message); }
+};
+window.okCompose = compose;
+</script></body></html>
