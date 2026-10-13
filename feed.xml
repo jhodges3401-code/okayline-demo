@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>Money Lab Status (demo)</title><link>https://jhodges3401-code.github.io/okayline-demo/</link><description>Live status and incident history for Money Lab products.</description><lastBuildDate>Tue, 13 Oct 2026 12:01:01 GMT</lastBuildDate>
+<item><title>[Demo] Database upgrade – scheduled</title><link>https://jhodges3401-code.github.io/okayline-demo/incidents/2026-10-20-db-maintenance.html</link><guid isPermaLink="false">2026-10-20-db-maintenance-2026-10-13T12:00:00Z</guid><pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate><description>scheduled: We will upgrade our primary database. The dashboard may be read-only for up to 10 minutes.</description></item>
+<item><title>[Demo] Elevated API latency – resolved</title><link>https://jhodges3401-code.github.io/okayline-demo/incidents/2026-10-10-api-latency.html</link><guid isPermaLink="false">2026-10-10-api-latency-2026-10-10T14:50:00Z</guid><pubDate>Sat, 10 Oct 2026 14:50:00 GMT</pubDate><description>resolved: Latency is back to normal. We added capacity to the API pool.
+identified: A database replica fell behind. We are failing over.
+investigating: Some API requests are taking longer than usual. We are looking into it.</description></item>
+</channel></rss>

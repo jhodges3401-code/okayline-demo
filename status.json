@@ -1,0 +1,37 @@
+{
+  "updated": "2026-10-13T12:01:01.632Z",
+  "overall": {
+    "key": "up",
+    "label": "All systems operational"
+  },
+  "components": [
+    {
+      "id": "calculator",
+      "name": "Rate Calculator",
+      "status": "up",
+      "uptime": 100,
+      "lastMs": 202
+    },
+    {
+      "id": "peelpixel",
+      "name": "PeelPixel",
+      "status": "up",
+      "uptime": 100,
+      "lastMs": 144
+    },
+    {
+      "id": "proposeroo",
+      "name": "Proposeroo",
+      "status": "up",
+      "uptime": 100,
+      "lastMs": 166
+    }
+  ],
+  "activeIncidents": [],
+  "maintenance": [
+    {
+      "id": "2026-10-20-db-maintenance",
+      "state": "upcoming"
+    }
+  ]
+}
